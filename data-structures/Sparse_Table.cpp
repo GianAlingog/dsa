@@ -5,6 +5,8 @@ using namespace std;
 #define endl "\n"
 #define fast_io() ios_base::sync_with_stdio(false); cin.tie(NULL)
 
+const int INF = 1e9;
+
 struct Sparse {
     vector<vector<int>> table;
     int size, LOGN;
@@ -15,7 +17,7 @@ struct Sparse {
         LOGN = 0;
         while ((1 << LOGN) <= size) LOGN++;
 
-        table = vector<vector<int>>(size, vector<int>(LOGN, 1e9));
+        table = vector<vector<int>>(size, vector<int>(LOGN, INF));
 
         build(data);
     }
