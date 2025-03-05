@@ -32,7 +32,7 @@ struct Sparse {
             table[i][0] = data[i];
         }
 
-        for (int j = 1; j <= LOGN; j++) {
+        for (int j = 1; j < LOGN; j++) {
             for (int i = 0; i + (1 << j) - 1 < size; i++) {
                 table[i][j] = merge(table[i][j-1], table[i+(1 << (j-1))][j-1]);
             }
