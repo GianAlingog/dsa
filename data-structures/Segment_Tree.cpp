@@ -70,6 +70,8 @@ struct SegTree {
         } else {
             right->update(pos, val);
         }
+
+        merge();
     }
 
     ll query(ll ql, ll qr) {
