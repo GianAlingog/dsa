@@ -30,6 +30,7 @@ const ld EPS = 1e-12;
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(x) ((ll)(x).size())
 
+const int MAXN = 1e6+5;
 const ll MOD = 1e9+7;
 
 ll binPow(ll a, ll b) {
@@ -43,6 +44,20 @@ ll binPow(ll a, ll b) {
     }
 
     return res;
+}
+
+// Modular Inverse
+// Point query O(log MOD)
+ll invMod(ll a) {
+    return binPow(a, MOD-2);
+}
+
+// Pre-calculation
+ll inv[MAXN];
+void INV() {
+    inv[1] = 1;
+    for (int i = 2; i < MAXN; i++)
+        inv[i] = MOD - MOD / i * inv[MOD % i] % MOD;
 }
 
 // https://cses.fi/problemset/task/1617/
