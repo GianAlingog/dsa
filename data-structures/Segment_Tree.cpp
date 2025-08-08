@@ -31,61 +31,100 @@ const ld EPS = 1e-12;
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(x) ((ll)(x).size())
 
-struct SegTree {
-    ll l, r;
-    SegTree *left, *right;
-    ll value;
+struct segtree {
+    int n, sz;
+    vector<int> tree;
 
-    void merge() {
-        value = min(left->value, right->value);
+    segtree(int l, int r, vector<int> &a) {
+        n = r+1;
+        sz = 2*n;
+        tree.resize(sz);
+
+        for (int i = 0; i < n; i++) {
+            tree[i + n] = a[i];
+        }
+
+        for (int i = n-1; i > 0; i--) {
+            tree[i] = max(tree[i<<1], tree[i<<1|1]);
+        }
     }
 
-    SegTree(ll l, ll r, vector<ll> &data) {
-        this->l = l;
-        this->r = r;
-        this->left = nullptr;
-        this->right = nullptr;
+    int query(int l, int r) {
+        if (l == r) return tree[l + n];
+        l += n, r += n;
+        int res = -1;
+        while (l <= r) {
+            if (l & 1) {
+                res = max(res, tree[l]);
+                l++;
+            }
 
-        if (l == r) {
-            value = data[l];
-            return;
+            if (!(r & 1)) {
+                res = max(res, tree[r]);
+                r--;
+            }
+
+            l >>= 1, r >>= 1;
         }
-
-        ll mid = (l + r) / 2;
-        left = new SegTree(l, mid, data);
-        right = new SegTree(mid + 1, r, data);
-
-        merge();
-    }
-
-    void update(ll pos, ll val) {
-        if (l == r) {
-            value = val;
-            return;
-        }
-
-        ll mid = (l + r) / 2;
-        if (pos <= mid) {
-            left->update(pos, val);
-        } else {
-            right->update(pos, val);
-        }
-
-        merge();
-    }
-
-    ll query(ll ql, ll qr) {
-        if (ql > r || qr < l) {
-            return INF;
-        }
-
-        if (ql <= l && r <= qr) {
-            return value;
-        }
-
-        return min(left->query(ql, qr), right->query(ql, qr));
+        return res;
     }
 };
+
+// struct SegTree {
+//     ll l, r;
+//     SegTree *left, *right;
+//     ll value;
+
+//     void merge() {
+//         value = min(left->value, right->value);
+//     }
+
+//     SegTree(ll l, ll r, vector<ll> &data) {
+//         this->l = l;
+//         this->r = r;
+//         this->left = nullptr;
+//         this->right = nullptr;
+
+//         if (l == r) {
+//             value = data[l];
+//             return;
+//         }
+
+//         ll mid = (l + r) / 2;
+//         left = new SegTree(l, mid, data);
+//         right = new SegTree(mid + 1, r, data);
+
+//         merge();
+//     }
+
+//     void update(ll pos, ll val) {
+//         if (l == r) {
+//             value = val;
+//             return;
+//         }
+
+//         ll mid = (l + r) / 2;
+//         if (pos <= mid) {
+//             left->update(pos, val);
+//         } else {
+//             right->update(pos, val);
+//         }
+
+//         merge();
+//     }
+
+//     ll query(ll ql, ll qr) {
+//         if (ql > r || qr < l) {
+//             return INF;
+//         }
+
+//         if (ql <= l && r <= qr) {
+//             return value;
+//         }
+
+//         return min(left->query(ql, qr), right->query(ql, qr));
+//     }
+// };
 
 void solution() {
     
