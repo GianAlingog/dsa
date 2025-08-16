@@ -200,3 +200,138 @@ signed main() {
     while (t--)
         solve();
 }
+
+// Similar:
+// #include <bits/stdc++.h>
+// using namespace std;
+
+// typedef long long ll;
+// typedef long double ld;
+
+// #define sp <<" "<<
+// #define endl "\n"
+
+// struct segtree {
+//     struct data {
+//         int sz;
+//         int pref, suff, best;
+//         int px, sx, bx;
+
+//         bool operator==(const data &oth) const {
+//             return sz == oth.sz and pref == oth.pref and suff == oth.suff and best == oth.best and
+//                     px == oth.px and sx == oth.sx and bx == oth.bx;
+//         }
+//     };
+
+//     const data INVALID = {-1, -1, -1, -1, -1, -1, -1};
+
+//     int l, r;
+//     data d;
+//     segtree *left, *right;
+
+//     data combine(data a, data b) {
+//         if (a == INVALID and b == INVALID) return INVALID;
+//         if (a == INVALID) return b;
+//         if (b == INVALID) return a;
+
+//         data e;
+//         if (a.pref == a.sz and a.px == b.px) {
+//             e.px = a.px;
+//             e.pref = a.pref + b.pref;
+//         } else {
+//             e.px = a.px;
+//             e.pref = a.pref;
+//         }
+
+//         if (b.suff == b.sz and a.sx == b.sx) {
+//             e.sx = b.sx;
+//             e.suff = a.suff + b.suff;
+//         } else {
+//             e.sx = b.sx;
+//             e.suff = b.suff;
+//         }
+
+//         e.sz = a.sz + b.sz;
+
+//         vector<pair<int, int>> cands = {{e.pref, e.px}, {e.suff, e.sx}, {a.best, a.bx}, {b.best, b.bx}};
+//         if (a.sx == b.px) cands.push_back({a.suff + b.pref, a.sx});
+//         sort(cands.rbegin(), cands.rend());
+
+//         // cerr << l sp r sp cands[0].first sp cands[0].second << endl;
+//         e.best = cands[0].first, e.bx = cands[0].second;
+
+//         return e;
+//     }
+
+//     void merge() {
+//         d = combine(left->d, right->d);
+//     }
+
+//     segtree(int l, int r, vector<int> &a) : l(l), r(r) {
+//         d.sz = r-l+1;
+//         if (l == r) {
+//             left = right = nullptr;
+//             d.pref = d.suff = d.best = 1;
+//             d.px = d.sx = d.bx = a[l];
+//             return;
+//         }
+
+//         int m = (l+r) / 2;
+//         left = new segtree(l, m, a);
+//         right = new segtree(m+1, r, a);
+//         merge();
+//     }
+
+//     void update(int ind, int upd) {
+//         if (l == r) {
+//             d.px = d.sx = d.bx = upd;
+//             return;
+//         }
+
+//         int m = (l+r) / 2;
+//         if (ind <= m) left->update(ind, upd);
+//         else right->update(ind, upd);
+//         merge();
+//     }
+
+//     data query(int ql, int qr) {
+//         if (ql > r or qr < l) return INVALID;
+//         if (ql <= l and r <= qr) return d;
+
+//         return combine(left->query(ql, qr), right->query(ql, qr));
+//     }
+// };
+
+// void solve() {
+//     int n, q; cin >> n >> q;
+//     string s; cin >> s;
+//     vector<int> a(n);
+//     for (int i = 0; i < n; i++) a[i] = s[i] - 'a';
+
+//     segtree st(0, n-1, a);
+    
+//     while (q--) {
+//         int type; cin >> type;
+//         if (type == 1) {
+//             int ind; char c; cin >> ind >> c; ind--;
+//             st.update(ind, c - 'a');
+//             // cerr << st.d.best << endl;
+//         } else {
+//             int l, r; cin >> l >> r; l--, r--;
+//             int res = st.query(l, r).best;
+//             assert(res >= 1);
+//             cout << res << endl;
+//         }
+//     }
+// }
+
+// signed main() {
+//     cin.tie(0);
+//     ios_base::sync_with_stdio(false);
+
+//     int t = 1;
+//     // cin >> t;
+//     while (t--)
+//         solve();
+// }
+
