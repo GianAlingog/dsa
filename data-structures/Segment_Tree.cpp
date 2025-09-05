@@ -49,6 +49,14 @@ struct segtree {
         }
     }
 
+    void update(int i, ll v) {
+        i += n;
+        tree[i] = v;
+        for (i >>= 1; i > 0; i >>= 1) {
+            tree[i] = max(tree[i<<1], tree[i<<1|1]);
+        }
+    }
+
     int query(int l, int r) {
         if (l == r) return tree[l + n];
         l += n, r += n;
