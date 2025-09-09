@@ -11,15 +11,9 @@ const ld EPS = 1e-12;
 #define endl "\n"
 #define sp <<" "<<
 #define REP(i, a, b) for(ll i = a; i < b; i++)
-#define dbg(x) cout << #x << " = " << x << endl
-#define mp make_pair
-#define pb push_back
-#define fi first
-#define se second
 #define fast_io() ios_base::sync_with_stdio(false); cin.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
-#define sz(x) ((ll)(x).size())
 
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
@@ -60,18 +54,3 @@ signed main() {
 
     return 0;
 }
-
-// Notes
-// is it greedy?
-// is it DP?
-// if online round: search OEIS, similar topics
-
-// put observations together
-// check for edge cases
-// try "dumb" solutions, you're fast enough to rewrite
-// clean up the implementation
-// keep it simple
-
-// check for overflow
-// check for small N
-// check for array with same or monotonic a_i
