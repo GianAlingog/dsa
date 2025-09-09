@@ -229,21 +229,22 @@ struct FastBitset64 {
     }
 
     // uses [l, r) standard
-    inline void set(size_t l, size_t r) {
-        if (l >= r) return;
-        assert(r <= N);
-        size_t lw = l >> POW_2, lb = l & FULL_MASK;
-        size_t rw = (r - 1) >> POW_2, rb = (r - 1) & FULL_MASK;
-        if (lw == rw) {
-            u64 m = ((~u64(0) << lb) & (~u64(0) >> (FULL_MASK - rb)));
-            a[lw] |= m;
-        } else {
-            a[lw] |= (~u64(0) << lb);
-            for (size_t i = lw + 1; i < rw; i++) a[i] = ~u64(0);
-            a[rw] |= (~u64(0) >> (FULL_MASK - rb));
-        }
-        fix_last();
-    }
+    // commenting this out due to bad API
+    // inline void set(size_t l, size_t r) {
+    //     if (l >= r) return;
+    //     assert(r <= N);
+    //     size_t lw = l >> POW_2, lb = l & FULL_MASK;
+    //     size_t rw = (r - 1) >> POW_2, rb = (r - 1) & FULL_MASK;
+    //     if (lw == rw) {
+    //         u64 m = ((~u64(0) << lb) & (~u64(0) >> (FULL_MASK - rb)));
+    //         a[lw] |= m;
+    //     } else {
+    //         a[lw] |= (~u64(0) << lb);
+    //         for (size_t i = lw + 1; i < rw; i++) a[i] = ~u64(0);
+    //         a[rw] |= (~u64(0) >> (FULL_MASK - rb));
+    //     }
+    //     fix_last();
+    // }
 };
 
 void solution() {
