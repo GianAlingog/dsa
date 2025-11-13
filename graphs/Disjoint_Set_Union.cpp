@@ -31,58 +31,61 @@ const ld EPS = 1e-12;
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(x) ((ll)(x).size())
 
-// this is better :P
-// vector<int> sz(n, 1), par(n);
-// iota(par.begin(), par.end(), 0);
-
-// auto find = [&](auto &&find, int u) -> int {
-//     if (u == par[u]) return u;
-//     return par[u] = find(find, par[u]);
-// };
-
-// auto unite = [&](int u, int v) -> bool {
-//     u = find(find, u), v = find(find, v);
-//     if (u == v) return false;
-//     if (sz[u] < sz[v]) swap(u, v);
-//     par[v] = u;
-//     sz[u] += sz[v];
-//     return true;
-// };
-
-struct DSU {
-    vector<int> parents;
-    vector<int> sizes;
-
-    DSU(int size) {
-        parents.resize(size);
-        sizes.resize(size);
-
-        for (int i = 0; i < size; i++) {
-            parents[i] = i;
-        }
-    }
-
-    int find_(int u) {
-        if (u == parents[u]) return u;
-        return parents[u] = find_(parents[u]);
-    }
-
-    void union_(int u, int v) {
-        u = find_(u);
-        v = find_(v);
-
-        if (u == v) return;
-
-        if (sizes[u] < sizes[v]) swap(u, v);
-        sizes[u] += sizes[v];
-        parents[v] = u;
-    }
-};
-
 void solution() {
+    // this is better :P
+    vector<int> sz(n, 1), par(n);
+    iota(par.begin(), par.end(), 0);
+    
+    auto find = [&](auto &&find, int u) -> int {
+        if (u == par[u]) return u;
+        return par[u] = find(find, par[u]);
+    };
+    
+    auto check = [&](int u, int v) -> bool {
+        return find(find, u) == find(find, v);
+    };
+    
+    auto unite = [&](int u, int v) -> bool {
+        u = find(find, u), v = find(find, v);
+        if (u == v) return false;
+        if (sz[u] < sz[v]) swap(u, v);
+        par[v] = u;
+        sz[u] += sz[v];
+        return true;
+    };
     
     return;
 }
+
+// struct DSU {
+//     vector<int> parents;
+//     vector<int> sizes;
+
+//     DSU(int size) {
+//         parents.resize(size);
+//         sizes.resize(size);
+
+//         for (int i = 0; i < size; i++) {
+//             parents[i] = i;
+//         }
+//     }
+
+//     int find_(int u) {
+//         if (u == parents[u]) return u;
+//         return parents[u] = find_(parents[u]);
+//     }
+
+//     void union_(int u, int v) {
+//         u = find_(u);
+//         v = find_(v);
+
+//         if (u == v) return;
+
+//         if (sizes[u] < sizes[v]) swap(u, v);
+//         sizes[u] += sizes[v];
+//         parents[v] = u;
+//     }
+// };
 
 signed main() {
     fast_io();
