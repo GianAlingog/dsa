@@ -51,19 +51,7 @@ struct FastSet {
 };
 
 void solution() {
-    ll n, k; cin >> n >> k;
-    string s; cin >> s;
-    ll ans = 0;
-    for (ll i = 0; i < n; ) {
-        if (s[i] == '1') {
-            i += k + 1;
-        } else {
-            ans++;
-            i++;
-        }
-    }
-
-    cout << ans << endl;
+    // oops
 
     return;
 }
