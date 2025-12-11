@@ -21,33 +21,48 @@ const ld EPS = 1e-12;
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(x) ((ll)(x).size())
  
+using arr = array<ll, 3>;
+
 struct segtree {
     struct data {
-        ll sum, pref, suff, best;
+        arr sum, pref, suff, best;
  
-        data(ll sum = -INF, ll pref = -INF, ll suff = -INF, ll best = -INF) : sum(sum), pref(pref), suff(suff), best(best) {;;}
+        data() {
+            arr bad = {-INF, -INF, -INF};
+            sum = pref = suff = best = bad;
+        }
+
+        data(ll val, ll ind) {
+            arr ts = {val, ind, ind};
+            sum = pref = suff = best = ts;
+        }
     };
  
     int l, r;
     data d;
     segtree *left, *right;
  
-    inline void merge() {
-        d = data(
-            left->d.sum + right->d.sum,
-            max(left->d.pref, left->d.sum + right->d.pref),
-            max(right->d.suff, right->d.sum + left->d.suff),
-            max({left->d.best, right->d.best, left->d.suff + right->d.pref})
-        );
+    inline arr merge(const arr &a, const arr &b) {
+        arr r;
+        r[0] = a[0] + b[0];
+        r[1] = min(a[1], b[1]);
+        r[2] = max(a[2], b[2]);
+
+        return r;
     }
  
     inline data combine(const data &a, const data &b) {
-        return data(
-            a.sum + b.sum,
-            max(a.pref, a.sum + b.pref),
-            max(b.suff, b.sum + a.suff),
-            max({a.best, b.best, a.suff + b.pref})
-        );
+        data r;
+
+        r.sum = merge(a.sum, b.sum);
+
+        r.pref = max(a.pref, merge(a.sum, b.pref));
+
+        r.suff = max(b.suff, merge(a.suff, b.sum));
+
+        r.best = max({a.best, b.best, merge(a.suff, b.pref)});
+
+        return r;
     }
  
     segtree(int l, int r, vector<ll> &a) : l(l), r(r) {
@@ -55,7 +70,7 @@ struct segtree {
         left = right = nullptr;
  
         if (l == r) {
-            d = data(a[l], a[l], a[l], a[l]);
+            d = data(a[l], l);
             return;
         }
  
@@ -63,12 +78,12 @@ struct segtree {
         left = new segtree(l, m, a);
         right = new segtree(m+1, r, a);
  
-        merge();
+        d = combine(left->d, right->d);
     }
  
     void update(int ind, int upd) {
         if (l == r) {
-            d = data(upd, upd, upd, upd);
+            d = data(upd, l);
             return;
         }
  
@@ -76,7 +91,7 @@ struct segtree {
         if (ind <= m) left->update(ind, upd);
         else right->update(ind, upd);
  
-        merge();
+        d = combine(left->d, right->d);
     }
  
     data query(int ql, int qr) {
@@ -89,16 +104,83 @@ struct segtree {
 };
  
 void solution() {
-    int n, q; cin >> n >> q;
-    vector<ll> a(n);
+    ll n; cin >> n;
+    vector<ll> a(n), c(n), p(n);
     REP(i, 0, n) cin >> a[i];
- 
-    segtree st(0, n-1, a);
- 
-    REP(i, 0, q) {
-        int a, b; cin >> a >> b; a--, b--;
-        cout << st.query(a, b).best << endl;
+    REP(i, 0, n) cin >> c[i];
+    REP(i, 0, n) cin >> p[i], p[i]--;
+
+    ll mx = *max_element(all(a));
+    ll best = INF;
+    REP(i, 0, n) {
+        if (a[i] == mx) {
+            best = min(best, c[i]);
+        }
     }
+
+
+    vector<ll> base = c;
+    vector<ll> st;
+    for (ll i = n-1; i >= 0; i--) {
+        while (!st.empty() and (a[st.back()] < a[i])) {
+            st.pop_back();
+        }
+        if (!st.empty() and c[st.back()] > c[i]) {
+            st.push_back(i);
+        } else if (st.empty()) st.push_back(i);
+
+        if (!st.empty()) base[i] = min(base[i], c[st.back()]);
+    }
+
+    st.clear();
+    for (ll i = 0; i < n; i++) {
+        while (!st.empty() and (a[st.back()] < a[i])) {
+            st.pop_back();
+        }
+        if (!st.empty() and c[st.back()] > c[i]) {
+            st.push_back(i);
+        } else if (st.empty()) st.push_back(i);
+
+        if (!st.empty()) base[i] = min(base[i], c[st.back()]);
+    }
+
+    vector<ll> left(n, -1), right(n, n);
+    st.clear();
+    REP(i, 0, n) {
+        while (!st.empty() and (a[st.back()] <= a[i])) st.pop_back();
+        if (!st.empty()) left[i] = st.back();
+        st.push_back(i);
+    }
+
+    st.clear();
+    for (ll i = n-1; i >= 0; i--) {
+        while (!st.empty() and (a[st.back()] <= a[i])) st.pop_back();
+        if (!st.empty()) right[i] = st.back();
+        st.push_back(i);
+    }
+
+    segtree trr(0, n-1, base);
+    cout << max(0LL, accumulate(all(base), 0LL) - best) << " ";
+
+    REP(i, 0, n) {
+        ll L = left[p[i]] + 1, R = right[p[i]] - 1;
+
+        auto res = trr.query(L, R);
+        while (res.best[0] > 0) {
+            ll l = res.best[1], r = res.best[2];
+            for (ll i = l; i <= r; i++) {
+                trr.update(i, 0);
+            }
+
+            res = trr.query(L, R);
+        }
+
+        res = trr.query(0, n-1);
+        cout << max(0LL, res.sum[0] - best) << " ";
+    }
+
+    cout << endl;
+
     return;
 }
  
