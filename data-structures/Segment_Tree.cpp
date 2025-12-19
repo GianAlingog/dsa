@@ -32,24 +32,24 @@ const ld EPS = 1e-12;
 #define sz(x) ((ll)(x).size())
 
 struct segtree {
-    int n, sz;
-    vector<int> tree;
+    ll n, sz;
+    vector<ll> tree;
 
-    segtree(int l, int r, vector<int> &a) {
+    segtree(ll l, ll r, vector<ll> &a) {
         n = r+1;
         sz = 2*n;
         tree.resize(sz);
 
-        for (int i = 0; i < n; i++) {
+        for (ll i = 0; i < n; i++) {
             tree[i + n] = a[i];
         }
 
-        for (int i = n-1; i > 0; i--) {
+        for (ll i = n-1; i > 0; i--) {
             tree[i] = max(tree[i<<1], tree[i<<1|1]);
         }
     }
 
-    void update(int i, ll v) {
+    void update(ll i, ll v) {
         i += n;
         tree[i] = v;
         for (i >>= 1; i > 0; i >>= 1) {
@@ -57,10 +57,9 @@ struct segtree {
         }
     }
 
-    int query(int l, int r) {
-        if (l == r) return tree[l + n];
+    ll query(ll l, ll r) {
         l += n, r += n;
-        int res = -1;
+        ll res = -1;
         while (l <= r) {
             if (l & 1) {
                 res = max(res, tree[l]);
